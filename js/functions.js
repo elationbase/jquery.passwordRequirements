@@ -16,10 +16,15 @@
 $(document).ready(function (){
 
 	$("input").passwordRequirements( { 
-		numCaracters:3, 
-		//infoMessage: "This is a test" 
-		fadeTime:1000,
-		style:"dark",
+		numCaracters: 8,
+	    useLowercase: true,
+	    useUppercase: true,
+		useNumbers: true,
+		useSpecial: true,
+		infoMessage: "The minimum password length is 8 characters and must contain at least 1 capital letter, 1 lowercase letter and 1 number.",
+		style: "dark", // Style Options Light or Dark
+		fadeTime:3000, // FadeIn / FadeOut in milliseconds,
+		place: "top"
 	} );
 
 });
