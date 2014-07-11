@@ -1,7 +1,7 @@
 /*
- * jQuery Minimun Password Requirements 1.0
- * https://github.com/elationbase/jquery.passwordRequirements
- * Copyright 2013, elationbase
+ * jQuery Minimun Password Requirements 1.1
+ * http://elationbase.com
+ * Copyright 2014, elationbase
  * Check Minimun Password Requirements
  * Free to use under the MIT license.
  * http://www.opensource.org/licenses/mit-license.php
@@ -20,156 +20,164 @@
 				useNumbers: true,
 				useSpecial: true,
 				infoMessage: "The minimum password length is 8 characters and must contain at least 1 capital letter, 1 lowercase letter and 1 number.",
-				infoMessageHints: true,
-				style: "light", // Style Options: Light or Dark
-				fadeTime:300, // FadeIn / FadeOut in milliseconds
-				place: "top",  // Tooltip postion Options: top, bottom, left, right, topleft, topright, bottomleft, bottomright
-            }
+				style: "light", // Style Options Light or Dark
+				fadeTime:300 // FadeIn / FadeOut in milliseconds
+            };
 
-            var options =  $.extend(defaults, options);
+            options =  $.extend(defaults, options);
 
             return this.each(function() {
 				
 				var o = options;
 				
+				// Add Variables for the li elements
+				var numCaractersUI = '<li class="pr-numCaracters"><span></span># of caracters</li>',
+					useLowercaseUI = '',
+					useUppercaseUI = '',
+					useNumbersUI   = '',
+					useSpecialUI   = '';
+				// Check if the options are checked
+				if (o.useLowercase === true) {
+					useLowercaseUI = '<li class="pr-useLowercase"><span></span>Lowercase letter</li>';
+				}
+				if (o.useUppercase === true) {
+					useUppercaseUI = '<li class="pr-useUppercase"><span></span>Capital letter</li>';
+				}
+				if (o.useNumbers === true) {
+					useNumbersUI = '<li class="pr-useNumbers"><span></span>Number</li>';
+				}
+				if (o.useSpecial === true) {
+					useSpecialUI = '<li class="pr-useSpecial"><span></span>Special caracter</li>';
+				}
 				
+				// Append password hint div
+				var messageDiv = '<div id="pr-box"><p>' + o.infoMessage + '</p><ul>' + numCaractersUI + useLowercaseUI + useUppercaseUI + useNumbersUI + useSpecialUI + '</ul></div>';
+				
+				// Set campletion vatiables
+				var numCaractersDone = true,
+					useLowercaseDone = true,
+					useUppercaseDone = true,
+					useNumbersDone   = true,
+					useSpecialDone   = true;
                 
+				// Show Message reusable function 
+				var showMessage = function () {
+					if (numCaractersDone === false || useLowercaseDone === false || useUppercaseDone === false || useNumbersDone === false || useSpecialDone === false) {
+						$(".pr-password").each(function() {
+							// Find the position of element
+							var posH = $(this).position().top,
+								itemH = $(this).innerHeight(),
+								totalH = posH+itemH,
+								itemL = $(this).position().left;
+							// Append info box tho the body
+							$("body")     .append(messageDiv);
+							$("#pr-box")  .addClass(o.style)
+										  .fadeIn(o.fadeTime)
+										  .css({top:totalH, left:itemL});
+						});
+					}
+				};
+				
 				// Show password hint 
-				$(this).on("focus",function (e){
-					e.preventDefault();
-					
-				
-					// Add password tooltip div
-					var tooltipDiv 	= '<div class="pr-tooltip"><span class="pr-tooltip-arrow"></span><div class="pr-tooltip-inner"><p>' + o.infoMessage + '</p><ul><li class="pr-numCaracters"><i></i># of caracters</li><li class="pr-useLowercase"><i></i>Lowercase letter</li><li class="pr-useUppercase"><i></i>Capital letter</li><li class="pr-useNumbers"><i></i>Number</li><li class="pr-useSpecial"><i></i>Special caracter</li></ul></div></div>';
-					var inputWidth 	= $(this).outerWidth();
-					var wrapper 	= '<div class="pr-tooltip-wrap" style="width:'+ inputWidth +'px"></div>'
-					
-					$(this).parent().css('postion','relative').append(tooltipDiv);
-					
-					
-					// Position tooltip
-					// Position Variables
-					var inputPosition 	= $(this).offset();
-					var inputPositionX 	= inputPosition.left;
-					var inputPositionY 	= inputPosition.top;
-					
-					switch (o.place) {
-						case 'top':
-							$(".pr-tooltip").addClass("pr-tooltip-top")
-											.css({ "left": "45%", "top": "0px" });
-						break;
-						case 'bottom':
-							$(".pr-tooltip").addClass("pr-tooltip-bottom")
-											.css({ "left": inputPositionX + "px", "top": inputPositionY + "px" });
-						break;
-						case 'left':
-							$(".pr-tooltip").addClass("pr-tooltip-left")
-											.css({ "left": inputPositionX + "px", "top": inputPositionY + "px" });
-						break;
-						case 'right':
-							$(".pr-tooltip").addClass("pr-tooltip-right")
-											.css({ "left": inputPositionX + "px", "top": inputPositionY + "px" });
-						break;
-					};
-					
-					// Set witch options to show
-					// Hide Lowercase
-					if ( o.useLowercase === false  ) {
-						$(".pr-useLowercase").addClass("pr-hide");
-					};
-					// Hide Upercase
-					if ( o.useUppercase === false  ) {
-						$(".pr-useUppercase").addClass("pr-hide");
-					};
-					// Hide Numbers
-					if ( o.useNumbers === false  ) {
-						$(".pr-useNumbers").addClass("pr-hide");
-					};
-					// Hide Special Caracters
-					if ( o.useSpecial === false  ) {
-						$(".pr-useSpecial").addClass("pr-hide");
-					};
-					
-				
-					var targetMessage = $(".pr-tooltip");
-					targetMessage .addClass(o.style)
-							      .fadeIn(o.fadeTime);
+				$(this).on("focus",function (){
+					showMessage();
 				});
 				
-				// Hide password hint 
-				$(this).on("blur",function (e){
-					e.preventDefault();
-					var targetMessage = $(".pr-tooltip");
-					targetMessage.fadeOut(o.fadeTime, function () {
-						targetMessage.remove();
+				// Delete Message reusable function 
+				var deleteMessage = function () {
+					var targetMessage = $("#pr-box");
+					targetMessage.fadeOut(o.fadeTime, function(){
+						$(this).remove();
 					});
+				};
+				
+				// Show / Delete Message when completed requirements function 
+				var checkCompleted = function () {
+					if (numCaractersDone === true && useLowercaseDone === true && useUppercaseDone === true && useNumbersDone === true && useSpecialDone === true) {
+						deleteMessage();
+					} else {
+						showMessage();
+					}
+				};
+				
+				// Show password hint 
+				$(this).on("blur",function (){
+					deleteMessage();
 				});
 				
-				// Show or Hide password tooltip based on users event
+				
+				// Show or Hide password hint based on user's event
 				// Set variables
-				var lowerCase   	= new RegExp('[a-z]');
-				var upperCase   	= new RegExp('[A-Z]');
-				var numbers     	= new RegExp('[0-9]');
-				var specialCaracter = new RegExp('[!,%,&,@,#,$,^,*,?,_,~]');
+				var lowerCase   		= new RegExp('[a-z]'),
+					upperCase   		= new RegExp('[A-Z]'),
+					numbers     		= new RegExp('[0-9]'),
+					specialCaracter     = new RegExp('[!,%,&,@,#,$,^,*,?,_,~]');
 				
 				// Show or Hide password hint based on keyup
-				$(this).on("keyup", function (){
+				$(this).on("keyup focus", function (){
 					var thisVal = $(this).val();  
+					
+					checkCompleted();
 					
 					// Check # of caracters
 					if ( thisVal.length >= o.numCaracters ) {
-						//console.log("good numCaracters");
-						$(".pr-numCaracters i").addClass("pr-ok");
+						// console.log("good numCaracters");
+						$(".pr-numCaracters span").addClass("pr-ok");
+						numCaractersDone = true;
 					} else {
-						//console.log("bad numCaracters");
-						$(".pr-numCaracters i").removeClass("pr-ok");
+						// console.log("bad numCaracters");
+						$(".pr-numCaracters span").removeClass("pr-ok");
+						numCaractersDone = false;
 					}
-					
-					// Lowercase meet requirements
+					// lowerCase meet requirements
 					if (o.useLowercase === true) {
 						if ( thisVal.match(lowerCase) ) {
-							//console.log("good lowerCase");
-							$(".pr-useLowercase i").addClass("pr-ok");
+							// console.log("good lowerCase");
+							$(".pr-useLowercase span").addClass("pr-ok");
+							useLowercaseDone = true;
 						} else {
-							//console.log("bad lowerCase");
-							$(".pr-useLowercase i").removeClass("pr-ok");
+							// console.log("bad lowerCase");
+							$(".pr-useLowercase span").removeClass("pr-ok");
+							useLowercaseDone = false;
 						}
 					}
-					
-					// Uppercase meet requirements
+					// upperCase meet requirements
 					if (o.useUppercase === true) {
 						if ( thisVal.match(upperCase) ) {
-							//console.log("good upperCase");
-							$(".pr-useUppercase i").addClass("pr-ok");
+							// console.log("good upperCase");
+							$(".pr-useUppercase span").addClass("pr-ok");
+							useUppercaseDone = true;
 						} else {
-							//console.log("bad upperCase");
-							$(".pr-useUppercase i").removeClass("pr-ok");
+							// console.log("bad upperCase");
+							$(".pr-useUppercase span").removeClass("pr-ok");
+							useUppercaseDone = false;
 						}
 					}
-					
-					// Numbers meet requirements
+					// upperCase meet requirements
 					if (o.useNumbers === true) {
 						if ( thisVal.match(numbers) ) {
-							//console.log("good numbers");
-							$(".pr-useNumbers i").addClass("pr-ok");
+							// console.log("good numbers");
+							$(".pr-useNumbers span").addClass("pr-ok");
+							useNumbersDone = true;
 						} else {
-							//console.log("bad numbers");
-							$(".pr-useNumbers i").removeClass("pr-ok");
+							// console.log("bad numbers");
+							$(".pr-useNumbers span").removeClass("pr-ok");
+							useNumbersDone = false;
 						}
 					}
-					
-					// Special Caracters meet requirements
+					// upperCase meet requirements
 					if (o.useSpecial === true) {
 						if ( thisVal.match(specialCaracter) ) {
-							//console.log("good specialCaracter");
-							$(".pr-useSpecial i").addClass("pr-ok");
+							// console.log("good specialCaracter");
+							$(".pr-useSpecial span").addClass("pr-ok");
+							useSpecialDone = true;
 						} else {
-							//console.log("bad specialCaracter");
-							$(".pr-useSpecial i").removeClass("pr-ok");
+							// console.log("bad specialCaracter");
+							$(".pr-useSpecial span").removeClass("pr-ok");
+							useSpecialDone = false;
 						}
 					}
 				});
-				
             });
         }
     });
