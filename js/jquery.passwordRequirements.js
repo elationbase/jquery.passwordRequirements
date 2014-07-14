@@ -15,12 +15,12 @@
             // options for the plugin
             var defaults = {
 				numCaracters: 8,
-                useLowercase: true,
-                useUppercase: true,
+				useLowercase: true,
+				useUppercase: true,
 				useNumbers: true,
 				useSpecial: true,
-				infoMessage: "The minimum password length is 8 characters and must contain at least 1 capital letter, 1 lowercase letter and 1 number.",
-				style: "light", // Style Options Light or Dark
+				infoMessage: '',
+				style: "light", // Style Options light or dark
 				fadeTime:300 // FadeIn / FadeOut in milliseconds
             };
 
@@ -30,6 +30,7 @@
 				
 				var o = options;
 				
+                o.infoMessage = 'The minimum password length is ' + o.numCaracters + ' characters and must contain at least 1 lowercase letter, 1 capital letter 1 number and 1 special caracter.';
 				// Add Variables for the li elements
 				var numCaractersUI = '<li class="pr-numCaracters"><span></span># of caracters</li>',
 					useLowercaseUI = '',
@@ -51,7 +52,7 @@
 				}
 				
 				// Append password hint div
-				var messageDiv = '<div id="pr-box"><p>' + o.infoMessage + '</p><ul>' + numCaractersUI + useLowercaseUI + useUppercaseUI + useNumbersUI + useSpecialUI + '</ul></div>';
+				var messageDiv = '<div id="pr-box"><i></i><div id="pr-box-inner"><p>' + o.infoMessage + '</p><ul>' + numCaractersUI + useLowercaseUI + useUppercaseUI + useNumbersUI + useSpecialUI + '</ul></div></div>';
 				
 				// Set campletion vatiables
 				var numCaractersDone = true,
@@ -65,10 +66,10 @@
 					if (numCaractersDone === false || useLowercaseDone === false || useUppercaseDone === false || useNumbersDone === false || useSpecialDone === false) {
 						$(".pr-password").each(function() {
 							// Find the position of element
-							var posH = $(this).position().top,
+							var posH = $(this).offset().top,
 								itemH = $(this).innerHeight(),
 								totalH = posH+itemH,
-								itemL = $(this).position().left;
+								itemL = $(this).offset().left;
 							// Append info box tho the body
 							$("body")     .append(messageDiv);
 							$("#pr-box")  .addClass(o.style)
