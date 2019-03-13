@@ -29,8 +29,9 @@
             return this.each(function() {
 				
 				var o = options;
-				
-                o.infoMessage = 'The minimum password length is ' + o.numCharacters + ' characters and must contain at least 1 lowercase letter, 1 capital letter, 1 number, and 1 special character.';
+				if(o.infoMessage === '') {
+                			o.infoMessage = 'The minimum password length is ' + o.numCharacters + ' characters and must contain at least 1 lowercase letter, 1 capital letter, 1 number, and 1 special character.';
+				}
 				// Add Variables for the li elements
 				var numCharactersUI = '<li class="pr-numCharacters"><span></span># of characters</li>',
 					useLowercaseUI = '',
