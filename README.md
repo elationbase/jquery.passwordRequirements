@@ -1,6 +1,6 @@
-###jQuery Plugin 
-#[Password Requirements](http://elationbase.com/jquery/jquery-password-requirements/)
-##The easy way to help users meet your minimum password requirements
+### jQuery Plugin 
+# [Password Requirements](http://elationbase.com/jquery/jquery-password-requirements/)
+## The easy way to help users meet your minimum password requirements
 ================================
 
 jQuery Plugin to Check Minimun Password Requirements
