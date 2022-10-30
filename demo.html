@@ -2,24 +2,25 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<title></title>
-	<link rel="stylesheet" href="css/reset.css" />
-	<link rel="stylesheet" href="css/jquery.passwordRequirements.css" />
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/jquery.passwordRequirements.css" />
 </head>
 
 <body>
     <form style="margin:300px">
         <input type="password" class="pr-password">
     </form>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write("<script src='js/lib/jquery-1.9.1.min.js'>\x3C/script>")</script>
-    <script src="js/jquery.passwordRequirements.min.js"></script>
+    <script src="js/lib/jquery-1.9.1.min.js"></script>
+    <script src="js/jquery.passwordRequirements.js"></script>
+    <script src="locale/pt_BR.js"></script>
     <script>
         /* trigger when page is ready */
-        $(document).ready(function (){
-            $(".pr-password").passwordRequirements();
+        $(document).ready(function () {
+            $(".pr-password").passwordRequirements({ useNumbers: true });
         });
     </script>
 </body>
+
 </html>
